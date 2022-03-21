@@ -1,0 +1,102 @@
+{% extends 'courses/base.html' %}
+{% load course_custom_tags %}
+{%block title%}
+Ordre
+{% endblock %}
+
+{%block content%}
+
+<div class="container">
+    <br>
+
+
+    <br>
+    <div class="row ">
+        <div class="col mr-auto ">
+            <div class="card ml-auto" style="width: 18rem;">
+                <img class="card-img-top" src="{{course.thumbnail.url}}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{course.name}}</h5>
+                    <p class="card-text m-0 p-0">
+                        Save {{course.discount}}%
+                        <br>
+                        <span class="price">
+                            <del>{{course.price|cfa}}</del>
+                            &nbsp;
+
+                            <span>{% cal_sellprice course.price course.discount as value %} {{value|cfa}}</span>
+                        </span>
+
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="col ">
+            <div>
+                <p class="display-5">{{course.name}}</p>
+                <hr>
+
+                {% if coupon %}
+
+                <p class="alert alert-light border ">
+                    Coupon Code Applied
+                    You Have Got {{coupon.discount}}% Discount
+                </p>
+                <br>
+                <p class="display-5">Montant : <b>{% cal_sellprice course.price coupon.discount as value %}
+                        {{value|cfa}}</b></p>
+
+                <a class="btn btn-light border" href="?action=create_payment&couponcode={{coupon.code}}">Payer
+                    </a>
+
+                {%else%}
+                <p class="display-5">Montant : <b>{% cal_sellprice course.price course.discount as value %}
+                        {{value|cfa}}</b></p>
+
+                <a class="btn btn-light border" href="https://paygateglobal.com/v1/page?token=2a2b0731-8259-40e3-8df0-26df05801e0e&amount={{value}}&description=Achat du cours {{course.name}}&identifier={{identifier}}&{{url}}">Payer</a>
+
+
+                {%endif %}
+
+            </div>
+
+            <br>
+
+            <div class="border p-4 rounded border-success">
+                {% if coupon_code_message %}
+                <div class="alert alert-info">
+                    {{coupon_code_message}}
+                </div> 
+                {% endif %}
+                <p>Coupon Code: </p>
+                <form action="" method="get">
+                    <div class="col-lg-5 form-group">
+                        <input type="text" name="couponcode" class="form-control" id="">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Apply" class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% if error is not None %}
+
+<script>
+
+    window.onload = () => {
+        alert("{{error}}")
+    }
+
+</script>
+
+{% endif %}
+{%endblock%}
